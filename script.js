@@ -91,6 +91,18 @@ function displayMessages() {
             fullButton.style.display = 'none';
         }
         
+        const originalButton = document.createElement('button');
+        originalButton.textContent = 'View Original';
+        originalButton.onclick = () => {
+            // construct or use fullBodyLink if available, else perhaps the base page
+            if (msg.fullBodyLink) {
+                window.open(msg.fullBodyLink, '_blank');
+            } else {
+                // fallback to the main messages page
+                window.open('https://megamail25.com/322481225923/messages?', '_blank');
+            }
+        };
+        
         let attachment = null;
         if (msg.attachmentLink) {
             // create element depending on type
@@ -115,6 +127,7 @@ function displayMessages() {
         msgDiv.appendChild(header);
         msgDiv.appendChild(body);
         msgDiv.appendChild(fullButton);
+        msgDiv.appendChild(originalButton);
         if (attachment) msgDiv.appendChild(attachment);
         if (reply) msgDiv.appendChild(reply);
         
