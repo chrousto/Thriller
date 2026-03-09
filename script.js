@@ -1,0 +1,151 @@
+let messages = [];
+let filteredMessages = [];
+
+async function loadData() {
+    const response = await fetch('data.json');
+    messages = await response.json();
+    filteredMessages = [...messages];
+    populateSenders();
+    displayMessages();
+}
+
+function populateSenders() {
+    const senderSelect = document.getElementById('searchSender');
+    const senders = [...new Set(messages.map(m => m.sender))];
+    senders.forEach(sender => {
+        const option = document.createElement('option');
+        option.value = sender;
+        option.textContent = sender;
+        senderSelect.appendChild(option);
+    });
+    
+    const typeSelect = document.getElementById('searchType');
+    const types = [...new Set(messages.map(m => m.type))];
+    types.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type;
+        option.textContent = type;
+        typeSelect.appendChild(option);
+    });
+}
+
+function displayMessages() {
+    const container = document.getElementById('messages');
+    container.innerHTML = '';
+    filteredMessages.forEach(msg => {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'message';
+        
+        const header = document.createElement('div');
+        header.className = 'header';
+        
+        // build icon area; use image if available
+        const icon = document.createElement('div');
+        icon.className = 'icon';
+        if (msg.iconUrl) {
+            const imgEl = document.createElement('img');
+            imgEl.src = msg.iconUrl;
+            imgEl.alt = msg.type || '';
+            imgEl.onerror = () => {
+                imgEl.style.display = 'none';
+            };
+            icon.appendChild(imgEl);
+        } else {
+            icon.textContent = '●'; // placeholder
+        }
+        
+        const sender = document.createElement('span');
+        sender.className = 'sender';
+        sender.textContent = msg.sender;
+        
+        const time = document.createElement('span');
+        time.className = 'time';
+        time.textContent = msg.dateISO ? msg.dateISO.replace('T', ' ') : '';
+        
+        header.appendChild(icon);
+        header.appendChild(sender);
+        header.appendChild(time);
+        
+        const body = document.createElement('div');
+        body.className = 'body';
+        // note: msg.body may already be full text because scraper followed link
+        const preview = msg.body.replace(/\n/g, ' ');
+        if (preview.length > 200) {
+            body.textContent = preview.substring(0, 200) + '...';
+        } else {
+            body.textContent = preview;
+        }
+        
+        const fullButton = document.createElement('button');
+        fullButton.textContent = 'VOIR PLUS';
+        fullButton.onclick = () => {
+            // if we have fullBodyLink, open in new tab; otherwise expand text
+            if (msg.fullBodyLink) {
+                window.open(msg.fullBodyLink, '_blank');
+            } else {
+                body.textContent = preview.replace(/\n/g, '\n');
+                fullButton.style.display = 'none';
+            }
+        };
+        if (!msg.fullBodyLink && preview.length <= 200) {
+            fullButton.style.display = 'none';
+        }
+        
+        let attachment = null;
+        if (msg.attachmentLink) {
+            // create element depending on type
+            if (msg.attachmentLink.match(/\.(png|jpg|jpeg|gif|webp)(\?|$)/i)) {
+                attachment = document.createElement('img');
+                attachment.src = msg.attachmentLink;
+                attachment.className = 'attachment image';
+            } else {
+                attachment = document.createElement('a');
+                attachment.href = msg.attachmentLink;
+                attachment.textContent = 'Pièce jointe';
+                attachment.className = 'attachment link';
+                attachment.target = '_blank';
+            }
+        }        
+        const reply = msg.reply ? document.createElement('div') : null;
+        if (reply) {
+            reply.className = 'reply';
+            reply.textContent = msg.reply;
+        }
+        
+        msgDiv.appendChild(header);
+        msgDiv.appendChild(body);
+        msgDiv.appendChild(fullButton);
+        if (attachment) msgDiv.appendChild(attachment);
+        if (reply) msgDiv.appendChild(reply);
+        
+        container.appendChild(msgDiv);
+    });
+}
+
+function filterMessages() {
+    const text = document.getElementById('searchText').value.toLowerCase();
+    const start = document.getElementById('searchDate').value; // YYYY-MM-DD
+    const end = document.getElementById('searchDateEnd').value;
+    const type = document.getElementById('searchType').value;
+    const sender = document.getElementById('searchSender').value;
+    
+    filteredMessages = messages.filter(msg => {
+        const msgDate = msg.dateISO ? msg.dateISO.slice(0,10) : '';
+        let dateOk = true;
+        if (start && msgDate < start) dateOk = false;
+        if (end && msgDate > end) dateOk = false;
+        return (text === '' || msg.body.toLowerCase().includes(text)) &&
+               dateOk &&
+               (type === '' || msg.type === type) &&
+               (sender === '' || msg.sender === sender);
+    });
+    displayMessages();
+}
+
+document.getElementById('searchText').addEventListener('input', filterMessages);
+document.getElementById('searchDate').addEventListener('change', filterMessages);
+document.getElementById('searchDateEnd').addEventListener('change', filterMessages);
+document.getElementById('searchType').addEventListener('change', filterMessages);
+document.getElementById('searchSender').addEventListener('change', filterMessages);
+
+loadData();

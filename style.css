@@ -1,0 +1,72 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.search {
+    margin-bottom: 20px;
+}
+
+.search input, .search select {
+    margin-right: 10px;
+    padding: 5px;
+}
+
+/* attachment images should max out at container width */
+.attachment.image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin-top: 5px;
+}
+
+.message {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.message .header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.message .icon img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.message .icon {
+    width: 20px;
+    height: 20px;
+    background: #f0f0f0;
+    margin-right: 10px;
+}
+
+.message .sender {
+    font-weight: bold;
+}
+
+.message .time {
+    color: #666;
+}
+
+.message .body {
+    margin-bottom: 10px;
+}
+
+.message .attachment {
+    color: blue;
+    text-decoration: underline;
+}
+
+.message .reply {
+    background: #f9f9f9;
+    padding: 10px;
+    border-left: 3px solid #ccc;
+}
