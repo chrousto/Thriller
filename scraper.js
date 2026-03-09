@@ -137,6 +137,12 @@ async function scrapePage(url) {
           fullBodyLink,
           reply
         };
+        // Avoid duplication: if reply is contained in body, clear it
+        const normalizedBody = message.body.replace(/\s+/g, ' ').trim();
+        const normalizedReply = message.reply.replace(/\s+/g, ' ').trim();
+        if (normalizedBody.includes(normalizedReply)) {
+          message.reply = null;
+        }
         messages.push(message);
       }
     }
