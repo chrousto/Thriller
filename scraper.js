@@ -56,30 +56,69 @@ async function scrapePage(url) {
 
         // remove the date/time from the text
         let afterDate = rawText.replace(dateMatch[0], '').trim();
-        // take the first token as sender, the rest as body
         let sender = null;
-        let body = '';
-        if (afterDate.length > 0) {
-          const parts = afterDate.split(' ');
-          sender = parts.shift();
-          body = parts.join(' ').trim();
+        let body = afterDate;
+        let userMessage = null;
+        let responseMessage = null;
+        let reply = null;
+        let attachmentLink = null;
+        let fullBodyLink = null;
+
+        // if there's a structured span with the name, use it
+        const nameSpan = cell.find('span.ia-name');
+        if (nameSpan.length > 0) {
+          sender = nameSpan.text().trim();
+          if (body.startsWith(sender)) {
+            body = body.slice(sender.length).trim();
+          }
+          // strip any leading punctuation/colon from the remainder
+          body = body.replace(/^[:\-–—\s]+/, '').trim();
         }
 
-        // links for attachment and full message
-        let attachmentLink = null;
+        // now, check for message-body structure
+        const messageBody = cell.find('.message-body');
+        if (messageBody.length > 0) {
+          const clampTexts = messageBody.find('.clamp-text');
+          clampTexts.each((i, el) => {
+            const $el = $(el);
+            const text = $el.text().trim();
+            if ($el.hasClass('message-response')) {
+              responseMessage = text.replace(/^Réponse:\s*/, '').trim();
+            } else if (text.startsWith('Émetteur:')) {
+              userMessage = text.replace(/^Émetteur:\s*/, '').trim();
+            }
+          });
+          // set reply to the response if present
+          reply = responseMessage;
+          // find fullBodyLink from button
+          const voirPlusBtn = messageBody.find('.voir-plus-btn');
+          if (voirPlusBtn.length > 0) {
+            let href = voirPlusBtn.attr('data-href');
+            if (href && href.startsWith('/')) {
+              href = `https://megamail25.com${href}`;
+            }
+            fullBodyLink = href;
+          }
+        } else {
+          // fallback: try extracting sender up to the first colon
+          const senderMatch = afterDate.match(/^([^:\n]+):\s*(.*)/);
+          if (senderMatch) {
+            sender = senderMatch[1].trim();
+            body = senderMatch[2].trim();
+          } else {
+            const parts = afterDate.split(' ');
+            sender = parts.shift();
+            body = parts.join(' ').trim();
+          }
+        }
+
+
+        // links for attachment
         const attachAnchor = cell.find('a:contains("Pièce jointe")');
         if (attachAnchor.length > 0) {
           attachmentLink = attachAnchor.attr('href') || null;
           if (attachmentLink && attachmentLink.startsWith('/')) {
             attachmentLink = `https://megamail25.com${attachmentLink}`;
-          }
-        }
-        let fullBodyLink = null;
-        const fullAnchor = cell.find('a:contains("Voir plus")');
-        if (fullAnchor.length > 0) {
-          fullBodyLink = fullAnchor.attr('href') || null;
-          if (fullBodyLink && fullBodyLink.startsWith('/')) {
-            fullBodyLink = `https://megamail25.com${fullBodyLink}`;
           }
         }
 
@@ -99,11 +138,7 @@ async function scrapePage(url) {
           }
         }
 
-        // check for reply text
-        let reply = null;
-        if (/Réponse:\s*/i.test(body)) {
-          reply = body.split(/Réponse:\s*/i)[1].trim();
-        }
+
 
         const message = {
           dateISO,
@@ -111,6 +146,7 @@ async function scrapePage(url) {
           time: timeStr,   // original HH:MM
           sender,
           body: fullBodyText || body,
+          userMessage,
           iconUrl,
           type,
           attachmentLink,

@@ -5,6 +5,7 @@ A better version of the message list site, with scraping, search, and static hos
 ## Features
 
 - Scrapes messages from the source site, following paging and "Voir plus" links for full bodies
+- Detects sender names via `<span class="ia-name">` when available (better accuracy)
 - Normalises date/time to ISO so the UI can filter by date range
 - Stores and renders real icon images and attachment URLs
 - Displays messages with type icon, sender, time, body
