@@ -5,6 +5,12 @@ body {
     padding: 20px;
 }
 
+#version {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 20px;
+}
+
 .search {
     margin-bottom: 20px;
 }

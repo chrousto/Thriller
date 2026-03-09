@@ -21,7 +21,7 @@ A better version of the message list site, with scraping, search, and static hos
 ## Hosting on GitHub Pages
 
 1. Create a GitHub repository
-2. Push the files (index.html, style.css, script.js, data.json)
+2. Push the files (index.html, style.css, script.js, data.json, version.json)
 3. Enable GitHub Pages in repository settings.
 
 ## Updating Data

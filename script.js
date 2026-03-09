@@ -9,6 +9,18 @@ async function loadData() {
     displayMessages();
 }
 
+async function loadVersion() {
+    try {
+        const response = await fetch('version.json');
+        const version = await response.json();
+        const versionDiv = document.getElementById('version');
+        const date = new Date(version.lastUpdated);
+        versionDiv.textContent = `Last updated: ${date.toLocaleString()} | ${version.messageCount} messages`;
+    } catch (e) {
+        console.warn('Could not load version info');
+    }
+}
+
 function populateSenders() {
     const senderSelect = document.getElementById('searchSender');
     const senders = [...new Set(messages.map(m => m.sender))];
@@ -160,5 +172,7 @@ document.getElementById('searchDate').addEventListener('change', filterMessages)
 document.getElementById('searchDateEnd').addEventListener('change', filterMessages);
 document.getElementById('searchType').addEventListener('change', filterMessages);
 document.getElementById('searchSender').addEventListener('change', filterMessages);
+document.getElementById('searchDateEnd').addEventListener('change', filterMessages);
 
+loadVersion();
 loadData();

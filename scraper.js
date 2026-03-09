@@ -172,7 +172,13 @@ async function scrapePage(url) {
 async function main() {
   await scrapePage(baseUrl + '?');
   fs.writeFileSync('data.json', JSON.stringify(messages, null, 2), 'utf-8');
-  console.log('Scraping complete. Data saved to data.json');
+  // write version info
+  const versionInfo = {
+    lastUpdated: new Date().toISOString(),
+    messageCount: messages.length
+  };
+  fs.writeFileSync('version.json', JSON.stringify(versionInfo, null, 2), 'utf-8');
+  console.log('Scraping complete. Data saved to data.json and version.json');
 }
 
 main();
