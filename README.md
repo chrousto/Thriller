@@ -26,8 +26,8 @@ A better version of the message list site, with scraping, search, and static hos
 
 ## Updating Data
 
-Run `node scraper.js` to fetch new messages and update `data.json`.  Or rely on the included GitHub Actions workflow, which will run every six hours (and can be triggered manually) to refresh the data and commit changes back to the repository.
+Run `node scraper.js` to fetch new messages and update `data.json`.  Or rely on the included GitHub Actions workflow, which will run every hour (and can be triggered manually) to refresh the data and commit changes back to the repository.
 
 ### GitHub Actions
 
-A `.github/workflows/scrape.yml` file is included; it installs dependencies, runs the scraper, and commits `data.json` if it changed.  Make sure the repository has write permissions for the action (default for the checkout action).
+A `.github/workflows/scrape.yml` file is included; it installs dependencies, runs the scraper, and commits `data.json` and `version.json` if they changed. It runs every hour (and can be triggered manually). Make sure the repository has write permissions for the action (default for the checkout action).
