@@ -39,6 +39,7 @@ body {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
+    gap: 10px;
 }
 
 .message .icon img {
@@ -48,18 +49,18 @@ body {
 }
 
 .message .icon {
-    width: 20px;
-    height: 20px;
-    background: #f0f0f0;
-    margin-right: 10px;
+    flex-shrink: 0;
 }
 
 .message .sender {
     font-weight: bold;
+    flex-grow: 1;
 }
 
 .message .time {
     color: #666;
+    font-size: 0.9em;
+    white-space: nowrap;
 }
 
 .message .body {

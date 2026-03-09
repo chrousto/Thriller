@@ -72,7 +72,7 @@ function displayMessages() {
         
         const time = document.createElement('span');
         time.className = 'time';
-        time.textContent = msg.dateISO ? msg.dateISO.replace('T', ' ') : '';
+        time.textContent = msg.dateISO ? new Date(msg.dateISO).toLocaleString('fr-FR') : '';
         
         header.appendChild(icon);
         header.appendChild(sender);
@@ -81,26 +81,22 @@ function displayMessages() {
         const body = document.createElement('div');
         body.className = 'body';
         // note: msg.body may already be full text because scraper followed link
-        const preview = msg.body.replace(/\n/g, ' ');
+        let cleanBody = msg.body;
+        // remove date/time if at start
+        const dateTimeRegex = /^(\d{2}\/\d{2}\/\d{4})\s+(\d{2}:\d{2})\s*/;
+        cleanBody = cleanBody.replace(dateTimeRegex, '');
+        // remove sender if at start
+        if (msg.sender) {
+            const senderRegex = new RegExp('^' + msg.sender.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[:\\s]*', 'i');
+            cleanBody = cleanBody.replace(senderRegex, '');
+        }
+        // remove leading/trailing whitespace
+        cleanBody = cleanBody.trim();
+        const preview = cleanBody.replace(/\n/g, ' ');
         if (preview.length > 200) {
             body.textContent = preview.substring(0, 200) + '...';
         } else {
             body.textContent = preview;
-        }
-        
-        const fullButton = document.createElement('button');
-        fullButton.textContent = 'VOIR PLUS';
-        fullButton.onclick = () => {
-            // if we have fullBodyLink, open in new tab; otherwise expand text
-            if (msg.fullBodyLink) {
-                window.open(msg.fullBodyLink, '_blank');
-            } else {
-                body.textContent = preview.replace(/\n/g, '\n');
-                fullButton.style.display = 'none';
-            }
-        };
-        if (!msg.fullBodyLink && preview.length <= 200) {
-            fullButton.style.display = 'none';
         }
         
         const originalButton = document.createElement('button');
@@ -138,7 +134,6 @@ function displayMessages() {
         
         msgDiv.appendChild(header);
         msgDiv.appendChild(body);
-        msgDiv.appendChild(fullButton);
         msgDiv.appendChild(originalButton);
         if (attachment) msgDiv.appendChild(attachment);
         if (reply) msgDiv.appendChild(reply);

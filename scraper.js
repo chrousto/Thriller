@@ -122,22 +122,6 @@ async function scrapePage(url) {
           }
         }
 
-        // optionally fetch full body text if link exists
-        let fullBodyText = null;
-        if (fullBodyLink) {
-          try {
-            const fbRes = await axios.get(fullBodyLink);
-            const $fb = cheerio.load(fbRes.data);
-            // naive extraction: take the same table cell or body text
-            fullBodyText = $fb('table').text().replace(/\s+/g, ' ').trim();
-            if (fullBodyText === '') {
-              fullBodyText = $fb('body').text().replace(/\s+/g, ' ').trim();
-            }
-          } catch (e) {
-            console.warn('Failed to fetch full body at', fullBodyLink);
-          }
-        }
-
 
 
         const message = {
@@ -145,7 +129,7 @@ async function scrapePage(url) {
           date: dateStr,   // original format DD/MM/YYYY
           time: timeStr,   // original HH:MM
           sender,
-          body: fullBodyText || body,
+          body: userMessage || body,
           userMessage,
           iconUrl,
           type,
