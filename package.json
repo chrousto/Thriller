@@ -4,7 +4,8 @@
   "description": "Scrape messages from site",
   "main": "scraper.js",
   "scripts": {
-    "scrape": "node scraper.js"
+    "scrape": "node scraper.js",
+    "serve": "npx http-server . -p 8000"
   },
   "dependencies": {
     "axios": "^0.27.2",

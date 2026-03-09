@@ -44,8 +44,10 @@ async function scrapePage(url) {
           }
         }
 
-        // collect raw text and normalize whitespace
-        const rawText = cell.text().replace(/\s+/g, ' ').trim();
+        // collect raw text and normalize whitespace but keep newlines
+        let rawText = cell.text().replace(/[ \t]+/g, ' ').trim();
+        // reduce multiple newlines and blank lines to single newline
+        rawText = rawText.replace(/\n\s*\n+/g, '\n');
         const dateMatch = rawText.match(/(\d{2}\/\d{2}\/\d{4})\s+(\d{2}:\d{2})/);
         if (!dateMatch) continue;
         const [_, dateStr, timeStr] = dateMatch;
@@ -137,6 +139,14 @@ async function scrapePage(url) {
           fullBodyLink,
           reply
         };
+        // Clean body
+        let finalBody = message.body;
+        finalBody = finalBody.replace(/\s*Pièce jointe\s*$/i, '');
+        finalBody = finalBody.replace(/\s*Voir plus\s*$/i, '');
+        // trim whitespace around newlines
+        finalBody = finalBody.replace(/\n\s+/g, '\n').replace(/\s+\n/g, '\n');
+        finalBody = finalBody.trim();
+        message.body = finalBody;
         // Avoid duplication: if reply is contained in body, clear it
         const normalizedBody = message.body.replace(/\s+/g, ' ').trim();
         const normalizedReply = message.reply.replace(/\s+/g, ' ').trim();

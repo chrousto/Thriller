@@ -74,9 +74,23 @@ function displayMessages() {
         time.className = 'time';
         time.textContent = msg.dateISO ? new Date(msg.dateISO).toLocaleString('fr-FR') : '';
         
+        const originalButton = document.createElement('button');
+        originalButton.textContent = 'Voir l\'Original';
+        originalButton.className = 'view-original';
+        originalButton.onclick = () => {
+            // construct or use fullBodyLink if available, else perhaps the base page
+            if (msg.fullBodyLink) {
+                window.open(msg.fullBodyLink, '_blank');
+            } else {
+                // fallback to the main messages page
+                window.open('https://megamail25.com/322481225923/messages?', '_blank');
+            }
+        };
+        
         header.appendChild(icon);
         header.appendChild(sender);
         header.appendChild(time);
+        header.appendChild(originalButton);
         
         const body = document.createElement('div');
         body.className = 'body';
@@ -90,26 +104,36 @@ function displayMessages() {
             const senderRegex = new RegExp('^' + msg.sender.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[:\\s]*', 'i');
             cleanBody = cleanBody.replace(senderRegex, '');
         }
+        // remove "Pièce jointe" and "Voir plus" from the end
+        cleanBody = cleanBody.replace(/\s*Pièce jointe\s*$/i, '');
+        cleanBody = cleanBody.replace(/\s*Voir plus\s*$/i, '');
+        // remove excessive blank lines
+        cleanBody = cleanBody.replace(/\n\s*\n+/g, '\n');
         // remove leading/trailing whitespace
         cleanBody = cleanBody.trim();
-        const preview = cleanBody.replace(/\n/g, ' ');
-        if (preview.length > 200) {
-            body.textContent = preview.substring(0, 200) + '...';
-        } else {
-            body.textContent = preview;
-        }
         
-        const originalButton = document.createElement('button');
-        originalButton.textContent = 'View Original';
-        originalButton.onclick = () => {
-            // construct or use fullBodyLink if available, else perhaps the base page
-            if (msg.fullBodyLink) {
-                window.open(msg.fullBodyLink, '_blank');
-            } else {
-                // fallback to the main messages page
-                window.open('https://megamail25.com/322481225923/messages?', '_blank');
+        // Convert URLs to clickable links while preserving newlines
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        const lines = cleanBody.split('\n');
+        const bodyFragment = document.createDocumentFragment();
+        
+        lines.forEach((line, index) => {
+            const parts = line.split(urlRegex);
+            parts.forEach((part) => {
+                if (part.match(urlRegex)) {
+                    const link = document.createElement('a');
+                    link.href = part;
+                    link.textContent = part;
+                    link.target = '_blank';
+                    body.appendChild(link);
+                } else {
+                    body.appendChild(document.createTextNode(part));
+                }
+            });
+            if (index < lines.length - 1) {
+                body.appendChild(document.createElement('br'));
             }
-        };
+        });
         
         let attachment = null;
         if (msg.attachmentLink) {
@@ -134,7 +158,6 @@ function displayMessages() {
         
         msgDiv.appendChild(header);
         msgDiv.appendChild(body);
-        msgDiv.appendChild(originalButton);
         if (attachment) msgDiv.appendChild(attachment);
         if (reply) msgDiv.appendChild(reply);
         
