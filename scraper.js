@@ -158,7 +158,7 @@ async function scrapePage(url) {
     }
     
     // Check for next page
-    const nextLink = $('a:contains("Suivant")').attr('href');
+    const nextLink = $('a[aria-label="Suivant"]').attr('href');
     if (nextLink) {
       page++;
       const nextUrl = `https://megamail25.com${nextLink}`;
