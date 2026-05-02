@@ -378,3 +378,146 @@ h1::after {
     transform: translate(-50%, -50%);
     filter: blur(40px);
 }
+
+@media (max-width: 900px) {
+    body {
+        padding: 16px;
+    }
+
+    .search {
+        padding: 16px;
+    }
+
+    .message {
+        padding: 18px;
+    }
+
+    .message .body {
+        font-size: 0.96rem;
+    }
+}
+
+@media (max-width: 720px) {
+    .search {
+        padding: 16px;
+        gap: 10px;
+    }
+
+    .search input,
+    .search select {
+        width: 100%;
+        margin: 0;
+        min-width: 0;
+    }
+
+    .search label {
+        flex: 1 1 100%;
+    }
+
+    .search {
+        justify-content: flex-start;
+    }
+
+    .search input,
+    .search select {
+        border-radius: 10px;
+    }
+
+    .message .header {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .message .sender {
+        width: 100%;
+    }
+
+    .message .time,
+    .message .view-original {
+        width: auto;
+        white-space: normal;
+    }
+
+    .message button {
+        width: 100%;
+        margin-right: 0;
+        margin-top: 8px;
+    }
+
+    .message .header {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 520px) {
+    body {
+        padding: 12px;
+    }
+
+    .search {
+        padding: 14px;
+        gap: 10px;
+    }
+
+    .message {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .message .header {
+        gap: 8px;
+    }
+
+    .message .icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .message .icon img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .message .sender {
+        font-size: 1rem;
+    }
+
+    .message .time {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+    }
+
+    .message button {
+        padding: 10px;
+    }
+
+    .search input,
+    .search select {
+        padding: 12px 14px;
+    }
+
+    .message .body {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 420px) {
+    .search {
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .search input,
+    .search select {
+        padding: 10px 12px;
+    }
+
+    .message {
+        margin-bottom: 14px;
+    }
+
+    .message button {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+}
