@@ -32,13 +32,101 @@ function populateSenders() {
     });
     
     const typeSelect = document.getElementById('searchType');
+    const typeMenu = document.getElementById('typeMenu');
+    const typeToggleLabel = document.getElementById('typeToggleLabel');
+    const typeToggleIcon = document.getElementById('typeToggleIcon');
     const types = [...new Set(messages.map(m => m.type))];
+    typeMenu.innerHTML = '';
+
+    const allOption = document.createElement('option');
+    allOption.value = '';
+    allOption.textContent = 'All Types';
+    typeSelect.appendChild(allOption);
+
+    const allButton = document.createElement('button');
+    allButton.type = 'button';
+    allButton.className = 'type-option';
+    allButton.addEventListener('click', () => {
+        selectType('', 'All Types', null);
+    });
+    const allButtonIcon = document.createElement('div');
+    allButtonIcon.className = 'type-option-image';
+    allButtonIcon.textContent = '⚪';
+    const allButtonLabel = document.createElement('span');
+    allButtonLabel.textContent = 'All Types';
+    allButton.appendChild(allButtonIcon);
+    allButton.appendChild(allButtonLabel);
+    typeMenu.appendChild(allButton);
+
     types.forEach(type => {
         const option = document.createElement('option');
         option.value = type;
         option.textContent = type;
         typeSelect.appendChild(option);
+
+        const iconUrl = getTypeIconUrl(type);
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'type-option';
+        button.addEventListener('click', () => {
+            selectType(type, type, iconUrl);
+        });
+
+        const img = document.createElement('img');
+        img.className = 'type-option-image';
+        img.alt = type;
+        if (iconUrl) {
+            img.src = iconUrl;
+        } else {
+            img.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22%3E%3Ccircle cx=%2212%22 cy=%2212%22 r=%2210%22 fill=%22%23667eea%22/%3E%3C/svg%3E';
+        }
+
+        const label = document.createElement('span');
+        label.textContent = type;
+
+        button.appendChild(img);
+        button.appendChild(label);
+        typeMenu.appendChild(button);
     });
+
+    const typeToggle = document.getElementById('typeToggle');
+    typeToggle.addEventListener('click', (event) => {
+        event.stopPropagation();
+        typeMenu.classList.toggle('visible');
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!typeMenu.contains(event.target) && !typeToggle.contains(event.target)) {
+            typeMenu.classList.remove('visible');
+        }
+    });
+
+    function selectType(typeValue, label, iconUrl) {
+        typeSelect.value = typeValue;
+        typeToggleLabel.textContent = label;
+
+        if (iconUrl) {
+            typeToggleIcon.innerHTML = '';
+            const iconImg = document.createElement('img');
+            iconImg.src = iconUrl;
+            iconImg.alt = label;
+            typeToggleIcon.appendChild(iconImg);
+            typeToggleIcon.style.display = 'inline-flex';
+        } else {
+            typeToggleIcon.innerHTML = '';
+            typeToggleIcon.style.display = 'none';
+        }
+
+        typeMenu.classList.remove('visible');
+        filterMessages();
+    }
+
+    selectType('', 'All Types', null);
+}
+
+function getTypeIconUrl(type) {
+    const messageWithType = messages.find(m => m.type === type && m.iconUrl);
+    return messageWithType ? messageWithType.iconUrl : null;
 }
 
 function displayMessages() {

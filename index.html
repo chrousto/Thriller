@@ -7,17 +7,29 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Message Viewer</h1>
-    <div id="version"></div>
+    <div class="page-header">
+        <div class="title-row">
+            <h1>Message Viewer</h1>
+        </div>
+        <span id="version" class="version-label"></span>
+    </div>
     <div class="search">
         <input type="text" id="searchText" placeholder="Search in body">
         <label for="searchDate">From:</label>
         <input type="date" id="searchDate">
         <label for="searchDateEnd">To:</label>
         <input type="date" id="searchDateEnd">
-        <select id="searchType">
+        <select id="searchType" aria-hidden="true" tabindex="-1" hidden>
             <option value="">All Types</option>
         </select>
+        <div class="type-select">
+            <button id="typeToggle" type="button" class="type-toggle">
+                <span id="typeToggleIcon" class="type-toggle-icon" aria-hidden="true"></span>
+                <span id="typeToggleLabel">All Types</span>
+                <span class="type-toggle-chevron">▾</span>
+            </button>
+            <div id="typeMenu" class="type-menu"></div>
+        </div>
         <select id="searchSender">
             <option value="">All Senders</option>
         </select>

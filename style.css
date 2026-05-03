@@ -92,18 +92,49 @@ body::after {
 h1 {
     color: white;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    margin-bottom: 10px;
+    margin: 0;
     position: relative;
     z-index: 10;
 }
 
-#version {
-    font-size: 0.9em;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 30px;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 14px;
     position: relative;
     z-index: 10;
+}
+
+.title-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin: 0;
+}
+
+.version-label {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 0.85rem;
+    border-radius: 999px;
+    text-shadow: none;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.message:hover {
+    background: #f4f8ff;
+    transform: translateY(-4px);
+    box-shadow: 
+        0 18px 36px rgba(35, 63, 105, 0.12),
+        0 8px 18px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(102, 126, 234, 0.18);
 }
 
 .search {
@@ -117,7 +148,7 @@ h1 {
     gap: 12px;
     align-items: center;
     position: relative;
-    z-index: 10;
+    z-index: 1000;
 }
 
 .search label {
@@ -134,15 +165,114 @@ h1 {
     background: white;
 }
 
-.search input:focus, .search select:focus {
-    outline: none;
+#searchType {
+    display: none !important;
+}
+
+.type-select {
+    position: relative;
+    z-index: 9999;
+    width: 210px;
+}
+
+.type-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    text-align: left;
+}
+
+.type-toggle:hover,
+.type-toggle:focus {
     border-color: #667eea;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.02) 0%, rgba(118, 75, 162, 0.02) 100%);
-    box-shadow: 
-        0 0 0 4px rgba(102, 126, 234, 0.15),
-        0 4px 12px rgba(102, 126, 234, 0.25),
-        inset 0 0 0 1px rgba(102, 126, 234, 0.1);
-    transform: scale(1.02);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    outline: none;
+}
+
+.type-toggle-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 10px;
+    background: #f0f2f5;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.type-toggle-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.type-toggle-chevron {
+    color: #667eea;
+    font-size: 1rem;
+}
+
+.type-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 99999;
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.14);
+    padding: 8px;
+    display: none;
+}
+
+.type-menu.visible {
+    display: block;
+}
+
+.type-option {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 12px;
+    text-align: left;
+    color: #333;
+    transition: background 0.2s ease;
+}
+
+.type-option:hover {
+    background: rgba(102, 126, 234, 0.08);
+}
+
+.type-option-image {
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    background: #f0f2f5;
+    object-fit: contain;
+}
+
+.type-option span {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .search input::placeholder {
@@ -173,13 +303,12 @@ h1 {
 }
 
 .message:hover {
-    background: rgba(255, 236, 179, 0.35);
-    transform: translateY(-6px) scale(1.01);
+    background: #f4f8ff;
+    transform: translateY(-4px);
     box-shadow: 
-        0 18px 40px rgba(0, 0, 0, 0.14),
-        0 0 24px rgba(255, 193, 7, 0.24),
-        inset 0 0 0 1px rgba(255, 193, 7, 0.18);
-    border: 1px solid rgba(255, 193, 7, 0.28);
+        0 18px 36px rgba(35, 63, 105, 0.12),
+        0 8px 18px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(102, 126, 234, 0.18);
 }
 
 .message .header {
