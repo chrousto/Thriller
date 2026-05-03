@@ -11,13 +11,23 @@ async function loadData() {
 
 async function loadVersion() {
     try {
-        const response = await fetch('version.json');
+        const response = await fetch('version.json', { cache: 'no-store' });
         const version = await response.json();
         const versionDiv = document.getElementById('version');
         const date = new Date(version.lastUpdated);
-        versionDiv.textContent = `Last updated: ${date.toLocaleString()} | ${version.messageCount} messages`;
+        const now = new Date();
+        versionDiv.innerHTML = `
+            <span class="version-line"><span class="version-icon">🕒</span><strong>Last scraped:</strong> ${date.toLocaleString()}</span>
+            <span class="version-line"><span class="version-icon">📦</span><strong>Messages:</strong> ${version.messageCount}</span>
+            <span class="version-line"><span class="version-icon">🔄</span><strong>Loaded:</strong> ${now.toLocaleString()}</span>
+        `;
     } catch (e) {
         console.warn('Could not load version info');
+        const versionDiv = document.getElementById('version');
+        const now = new Date();
+        versionDiv.innerHTML = `
+            <span class="version-line"><span class="version-icon">🔄</span><strong>Loaded:</strong> ${now.toLocaleString()}</span>
+        `;
     }
 }
 
