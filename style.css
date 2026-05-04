@@ -173,7 +173,7 @@ h1 {
     gap: 12px;
     align-items: center;
     position: relative;
-    z-index: 1000;
+    z-index: 2000;
 }
 
 .search label {

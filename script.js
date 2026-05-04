@@ -61,7 +61,8 @@ function populateSenders() {
     });
     const allButtonIcon = document.createElement('div');
     allButtonIcon.className = 'type-option-image';
-    allButtonIcon.textContent = '⚪';
+    allButtonIcon.style.fontSize = '1.6em';
+    allButtonIcon.textContent = '✨';
     const allButtonLabel = document.createElement('span');
     allButtonLabel.textContent = 'All Types';
     allButton.appendChild(allButtonIcon);
