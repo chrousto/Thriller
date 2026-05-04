@@ -33,14 +33,69 @@ async function loadVersion() {
 
 function populateSenders() {
     const senderSelect = document.getElementById('searchSender');
-    const senders = [...new Set(messages.map(m => m.sender))];
+    const senderMenu = document.getElementById('senderMenu');
+    const senderToggleLabel = document.getElementById('senderToggleLabel');
+    const senders = [...new Set(messages.map(m => m.sender))].sort();
+    senderMenu.innerHTML = '';
+
+    const allOption = document.createElement('option');
+    allOption.value = '';
+    allOption.textContent = 'All Senders';
+    senderSelect.appendChild(allOption);
+
+    const allButton = document.createElement('button');
+    allButton.type = 'button';
+    allButton.className = 'sender-option';
+    allButton.addEventListener('click', () => {
+        selectSender('', 'All Senders');
+    });
+    const allButtonLabel = document.createElement('span');
+    allButtonLabel.textContent = 'All Senders';
+    allButton.appendChild(allButtonLabel);
+    senderMenu.appendChild(allButton);
+
     senders.forEach(sender => {
         const option = document.createElement('option');
         option.value = sender;
         option.textContent = sender;
         senderSelect.appendChild(option);
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'sender-option';
+        button.addEventListener('click', () => {
+            selectSender(sender, sender);
+        });
+
+        const label = document.createElement('span');
+        label.textContent = sender;
+
+        button.appendChild(label);
+        senderMenu.appendChild(button);
     });
-    
+
+    const senderToggle = document.getElementById('senderToggle');
+    senderToggle.addEventListener('click', (event) => {
+        event.stopPropagation();
+        senderMenu.classList.toggle('visible');
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!senderMenu.contains(event.target) && !senderToggle.contains(event.target)) {
+            senderMenu.classList.remove('visible');
+        }
+    });
+
+    function selectSender(senderValue, label) {
+        senderSelect.value = senderValue;
+        senderToggleLabel.textContent = label;
+        senderMenu.classList.remove('visible');
+        filterMessages();
+    }
+
+    selectSender('', 'All Senders');
+
+    // Now populate types
     const typeSelect = document.getElementById('searchType');
     const typeMenu = document.getElementById('typeMenu');
     const typeToggleLabel = document.getElementById('typeToggleLabel');
@@ -48,26 +103,26 @@ function populateSenders() {
     const types = [...new Set(messages.map(m => m.type))];
     typeMenu.innerHTML = '';
 
-    const allOption = document.createElement('option');
-    allOption.value = '';
-    allOption.textContent = 'All Types';
-    typeSelect.appendChild(allOption);
+    const typeAllOption = document.createElement('option');
+    typeAllOption.value = '';
+    typeAllOption.textContent = 'All Types';
+    typeSelect.appendChild(typeAllOption);
 
-    const allButton = document.createElement('button');
-    allButton.type = 'button';
-    allButton.className = 'type-option';
-    allButton.addEventListener('click', () => {
+    const typeAllButton = document.createElement('button');
+    typeAllButton.type = 'button';
+    typeAllButton.className = 'type-option';
+    typeAllButton.addEventListener('click', () => {
         selectType('', 'All Types', null);
     });
-    const allButtonIcon = document.createElement('div');
-    allButtonIcon.className = 'type-option-image';
-    allButtonIcon.style.fontSize = '1.6em';
-    allButtonIcon.textContent = '✨';
-    const allButtonLabel = document.createElement('span');
-    allButtonLabel.textContent = 'All Types';
-    allButton.appendChild(allButtonIcon);
-    allButton.appendChild(allButtonLabel);
-    typeMenu.appendChild(allButton);
+    const typeAllButtonIcon = document.createElement('div');
+    typeAllButtonIcon.className = 'type-option-image';
+    typeAllButtonIcon.style.fontSize = '1.6em';
+    typeAllButtonIcon.textContent = '✨';
+    const typeAllButtonLabel = document.createElement('span');
+    typeAllButtonLabel.textContent = 'All Types';
+    typeAllButton.appendChild(typeAllButtonIcon);
+    typeAllButton.appendChild(typeAllButtonLabel);
+    typeMenu.appendChild(typeAllButton);
 
     types.forEach(type => {
         const option = document.createElement('option');
@@ -89,7 +144,7 @@ function populateSenders() {
         if (iconUrl) {
             img.src = iconUrl;
         } else {
-            img.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22%3E%3Ccircle cx=%2212%22 cy=%2212%22 r=%2210%22 fill=%22%23667eea%22/%3E%3C/svg%3E';
+            img.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22%3E%3Ccircle cx=%2212%22 cy=%2212%22 r=%2710%22 fill=%22%23667eea%22/%3E%3C/svg%3E';
         }
 
         const label = document.createElement('span');
