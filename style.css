@@ -97,38 +97,6 @@ h1 {
     z-index: 10;
 }
 
-h1::before {
-    content: '';
-    position: fixed;
-    top: 60%;
-    left: 15%;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(255, 193, 7, 1) 0%, rgba(255, 193, 7, 0.6) 40%, rgba(255, 193, 7, 0.2) 70%, transparent 100%);
-    border-radius: 50%;
-    animation: float3 12s ease-in-out infinite;
-    pointer-events: none;
-    z-index: -1;
-    transform: translate(-50%, -50%);
-    filter: blur(40px);
-}
-
-h1::after {
-    content: '';
-    position: fixed;
-    top: 35%;
-    right: 15%;
-    width: 650px;
-    height: 650px;
-    background: radial-gradient(circle, rgba(76, 175, 80, 1) 0%, rgba(76, 175, 80, 0.6) 40%, rgba(76, 175, 80, 0.2) 70%, transparent 100%);
-    border-radius: 50%;
-    animation: float4 9s ease-in-out infinite;
-    pointer-events: none;
-    z-index: -1;
-    transform: translate(50%, -50%);
-    filter: blur(40px);
-}
-
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -200,39 +168,6 @@ h1::after {
     gap: 12px;
     align-items: center;
     position: relative;
-    z-index: 2000;
-}
-
-.search::before {
-    content: '';
-    position: fixed;
-    top: 55%;
-    left: 75%;
-    width: 700px;
-    height: 700px;
-    background: radial-gradient(circle, rgba(244, 67, 54, 1) 0%, rgba(244, 67, 54, 0.6) 40%, rgba(244, 67, 54, 0.2) 70%, transparent 100%);
-    border-radius: 50%;
-    animation: float5 11s ease-in-out infinite;
-    pointer-events: none;
-    z-index: -1;
-    transform: translate(-50%, -50%);
-    filter: blur(40px);
-}
-
-.search::after {
-    content: '';
-    position: fixed;
-    top: 45%;
-    left: 30%;
-    width: 680px;
-    height: 680px;
-    background: radial-gradient(circle, rgba(103, 58, 183, 1) 0%, rgba(103, 58, 183, 0.6) 40%, rgba(103, 58, 183, 0.2) 70%, transparent 100%);
-    border-radius: 50%;
-    animation: float6 13s ease-in-out infinite;
-    pointer-events: none;
-    z-index: -1;
-    transform: translate(-50%, -50%);
-    filter: blur(40px);
 }
 
 .search label {
